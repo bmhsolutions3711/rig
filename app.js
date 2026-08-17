@@ -27,7 +27,10 @@
   const lotEl = $("lot");
   const lotSec = $("lotSec");
   const gateEl = $("gate");
-  const gateList = $("gateList");
+  const gateFront = $("gateFront");
+  const gateFold = $("gateFold");
+  const frontList = $("frontList");
+  const foldList = $("foldList");
   const gateLamp = $("gateLamp");
   const padCount = $("padCount");
   const boardEl = $("board");
@@ -132,11 +135,16 @@
     }
     padEl.innerHTML = slots.join("");
 
-    const gate = yard.gate || [];
-    gateLamp.dataset.on = gate.length ? "1" : "0";
-    gateLamp.title = gate.length ? `${gate.length} at the gate` : "gate clear";
-    gateEl.hidden = gate.length === 0;
-    gateList.innerHTML = gate.map((l) => ticket(l, true)).join("");
+    const docket = yard.docket || { front: [], fold: [], front_n: 0, fold_n: 0 };
+    const front = docket.front || [];
+    const fold = docket.fold || [];
+    gateLamp.dataset.on = front.length ? "1" : "0";
+    gateLamp.title = front.length ? `${front.length} at the front` : "gate clear";
+    gateEl.hidden = front.length + fold.length === 0;
+    gateFront.hidden = front.length === 0;
+    gateFold.hidden = fold.length === 0;
+    frontList.innerHTML = front.map((l) => ticket(l, true)).join("");
+    foldList.innerHTML = fold.map((l) => ticket(l, true)).join("");
 
     const epics = yard.board || [];
     epicNav.hidden = epics.length === 0;
@@ -189,9 +197,29 @@
     openId = null;
   }
 
+  async function drawLog(q) {
+    const box = $("logList");
+    const nEl = $("logN");
+    if (!box) return;
+    const qs = q ? `?n=80&q=${encodeURIComponent(q)}` : "?n=80";
+    try {
+      const data = await api("/api/log" + qs);
+      const rows = data.log || [];
+      if (nEl) nEl.textContent = String(rows.length);
+      box.innerHTML = rows.map((r) =>
+        `<li><time>${escape((r.at || "").replace("T", " ").slice(0, 16))}</time>` +
+        `<b>${escape(r.kind)}</b> <span>${escape(r.ref || "")}</span>` +
+        `<em>${escape(r.detail || "")}</em></li>`
+      ).join("") || "<li class='empty'>Nothing in the log.</li>";
+    } catch (_) {
+      box.innerHTML = "<li class='empty'>Log unread.</li>";
+    }
+  }
+
   async function refresh() {
     yard = await api("/api/yard");
     render();
+    if ($("logBox") && $("logBox").open) drawLog($("logQ").value.trim());
     if (openId) {
       const still = findLoad(openId);
       if (still) {
@@ -227,7 +255,11 @@
     const btn = e.target.closest("[data-id]");
     if (btn) openSheet(Number(btn.dataset.id));
   });
-  gateList.addEventListener("click", (e) => {
+  frontList.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-id]");
+    if (btn) openSheet(Number(btn.dataset.id));
+  });
+  foldList.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-id]");
     if (btn) openSheet(Number(btn.dataset.id));
   });
@@ -260,6 +292,12 @@
       } else if (kind === "lot") {
         await api(`/api/loads/${openId}/lot`, { method: "POST", body: "{}" });
       } else if (kind === "weigh") {
+        if (!$("sheetDid").value.trim()) {
+          sheetErr.hidden = false;
+          sheetErr.textContent = "Weigh-out needs I did.";
+          $("sheetDid").focus();
+          return;
+        }
         await api(`/api/loads/${openId}/weigh`, {
           method: "POST",
           body: JSON.stringify({ did: $("sheetDid").value }),
@@ -348,6 +386,14 @@
       enErr.hidden = false;
       enErr.textContent = err.message;
     }
+  });
+
+  $("logBox").addEventListener("toggle", () => {
+    if ($("logBox").open) drawLog($("logQ").value.trim());
+  });
+  $("logFind").addEventListener("submit", (e) => {
+    e.preventDefault();
+    drawLog($("logQ").value.trim());
   });
 
   if ("serviceWorker" in navigator) {

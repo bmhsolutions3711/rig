@@ -269,6 +269,57 @@ body {
 .weighed .ticket { margin-top: 8px; }
 .empty { color: var(--ink-mute); font-size: 0.85rem; }
 
+.log-fold { margin-top: 8px; padding-bottom: 8px; }
+.log-fold summary {
+  cursor: pointer;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-weight: 600;
+}
+.log-fold summary span { font-family: var(--mono); letter-spacing: 0; }
+.log-find {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  margin: 10px 0;
+}
+.log-find input {
+  height: 40px;
+  border: 1px solid #2a2824;
+  background: var(--lift);
+  color: var(--ink);
+  font: inherit;
+  padding: 0 12px;
+}
+.log-find .act { height: 40px; min-width: 64px; }
+.log-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 280px;
+  overflow: auto;
+}
+.log-list li {
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  display: grid;
+  grid-template-columns: 7.2rem 5.5rem 1fr;
+  gap: 6px 10px;
+  align-items: baseline;
+}
+.log-list time { font-family: var(--mono); color: var(--ink-mute); }
+.log-list b { color: var(--paint); font-weight: 600; letter-spacing: 0.04em; }
+.log-list em { grid-column: 1 / -1; font-style: normal; color: var(--ink); }
+@media (max-width: 640px) {
+  .log-list li { grid-template-columns: 1fr 1fr; }
+  .log-list time { grid-column: 1 / -1; }
+}
+
 .lot, .gate, .scale { display: flex; flex-direction: column; gap: 10px; }
 [hidden] { display: none !important; }
 h2 {

@@ -26,8 +26,14 @@
     <section class="pad" id="pad" aria-label="The pad"></section>
 
     <section class="gate" id="gate" hidden>
-      <h2>Gate</h2>
-      <div class="gate-list" id="gateList"></div>
+      <div id="gateFront" hidden>
+        <h2>Gate — front</h2>
+        <div class="gate-list" id="frontList"></div>
+      </div>
+      <div id="gateFold" hidden>
+        <h2>Gate — fold</h2>
+        <div class="gate-list" id="foldList"></div>
+      </div>
     </section>
 
     <nav class="epic-nav" id="epicNav" hidden></nav>
@@ -37,6 +43,18 @@
     <section class="lot" id="lotSec" hidden>
       <h2>Ungrouped <span id="lotN"></span></h2>
       <div class="lot-list" id="lot"></div>
+    </section>
+
+    <section class="log-fold">
+      <details id="logBox">
+        <summary>The log <span id="logN"></span></summary>
+        <form class="log-find" id="logFind" autocomplete="off">
+          <label class="sr" for="logQ">Find in the log</label>
+          <input id="logQ" placeholder="kind, ref, or words" />
+          <button type="submit" class="act">Find</button>
+        </form>
+        <ol class="log-list" id="logList"></ol>
+      </details>
     </section>
 
     <form class="drop" id="drop" autocomplete="off">
