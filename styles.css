@@ -221,6 +221,54 @@ body {
   overflow: hidden;
 }
 
+.epic-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.epic-chip {
+  background: var(--lift);
+  border: 1px solid #2a2824;
+  color: var(--ink-dim);
+  font: inherit;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  padding: 8px 10px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.epic-chip span { color: var(--ink-mute); font-family: var(--mono); }
+.epic-chip.on { border-color: var(--paint); color: var(--paint); }
+
+.board { display: flex; flex-direction: column; gap: 28px; }
+.epic header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--ink);
+}
+.epic header h2 span {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-weight: 500;
+}
+.epic .why {
+  margin: 6px 0 12px;
+  color: var(--ink-dim);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+.epic-loads { display: flex; flex-direction: column; gap: 8px; }
+.epic-loads .ticket { min-height: 92px; }
+.ticket.zone-scale { opacity: 0.72; }
+.weighed { margin-top: 10px; color: var(--ink-mute); font-size: 0.78rem; }
+.weighed summary { cursor: pointer; letter-spacing: 0.12em; text-transform: uppercase; }
+.weighed .ticket { margin-top: 8px; }
+.empty { color: var(--ink-mute); font-size: 0.85rem; }
+
 .lot, .gate, .scale { display: flex; flex-direction: column; gap: 10px; }
 h2 {
   margin: 0;

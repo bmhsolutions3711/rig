@@ -16,7 +16,7 @@
   <div id="app">
     <header class="mast">
       <div class="brand">RIG</div>
-      <div class="bay" id="bay">work</div>
+      <div class="bay" id="bay">board</div>
       <div class="pad-count" id="padCount" aria-live="polite">0/3</div>
       <div class="gate-lamp" id="gateLamp" data-on="0" title="gate clear"></div>
       <button type="button" class="mast-act" id="closeBtn">Close</button>
@@ -30,14 +30,13 @@
       <div class="gate-list" id="gateList"></div>
     </section>
 
-    <section class="lot" aria-label="The lot">
-      <h2>Lot <span id="lotN"></span></h2>
-      <div class="lot-list" id="lot"></div>
-    </section>
+    <nav class="epic-nav" id="epicNav" hidden></nav>
 
-    <section class="scale" id="scaleSec" hidden>
-      <h2>Scale <span id="scaleN"></span></h2>
-      <div class="scale-list" id="scale"></div>
+    <section class="board" id="board" aria-label="Epics and stories"></section>
+
+    <section class="lot" id="lotSec" hidden>
+      <h2>Ungrouped <span id="lotN"></span></h2>
+      <div class="lot-list" id="lot"></div>
     </section>
 
     <form class="drop" id="drop" autocomplete="off">

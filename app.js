@@ -25,14 +25,13 @@
   ingestHash();
   const padEl = $("pad");
   const lotEl = $("lot");
+  const lotSec = $("lotSec");
   const gateEl = $("gate");
   const gateList = $("gateList");
   const gateLamp = $("gateLamp");
   const padCount = $("padCount");
-  const lotN = $("lotN");
-  const scaleSec = $("scaleSec");
-  const scaleEl = $("scale");
-  const scaleN = $("scaleN");
+  const boardEl = $("board");
+  const epicNav = $("epicNav");
   const sheet = $("sheet");
   const connect = $("connect");
   const drop = $("drop");
@@ -44,6 +43,7 @@
 
   let yard = null;
   let openId = null;
+  let focusEpic = "";
   let origin = localStorage.getItem("rig_origin") || (onPages ? DEFAULT_ORIGIN : "");
   let token = localStorage.getItem("rig_token") || "";
 
@@ -91,7 +91,7 @@
   function ticket(load, compact) {
     const said = escape(load.said || "—");
     const did = load.did ? `<p class="did">${escape(load.did)}</p>` : "";
-    return `<button type="button" class="ticket" data-id="${load.id}">
+    return `<button type="button" class="ticket zone-${load.zone || "lot"}" data-id="${load.id}">
       <span class="stub" aria-hidden="true"></span>
       <span class="face">
         <h3>${escape(load.title)}</h3>
@@ -138,14 +138,31 @@
     gateEl.hidden = gate.length === 0;
     gateList.innerHTML = gate.map((l) => ticket(l, true)).join("");
 
-    const lot = yard.lot || [];
-    lotN.textContent = lot.length ? String(lot.length) : "";
-    lotEl.innerHTML = lot.map((l) => ticket(l, true)).join("");
+    const epics = yard.board || [];
+    epicNav.hidden = epics.length === 0;
+    epicNav.innerHTML = `<button type="button" class="epic-chip${focusEpic ? "" : " on"}" data-epic="">All</button>` +
+      epics.map((e) => `<button type="button" class="epic-chip${focusEpic === e.id ? " on" : ""}" data-epic="${e.id}">${escape(e.title)} <span>${e.open}</span></button>`).join("");
 
-    const scale = yard.scale || [];
-    scaleSec.hidden = scale.length === 0;
-    scaleN.textContent = scale.length ? String(scale.length) : "";
-    scaleEl.innerHTML = scale.map((l) => ticket(l)).join("");
+    boardEl.innerHTML = epics
+      .filter((e) => !focusEpic || e.id === focusEpic)
+      .map((e) => {
+        const open = (e.loads || []).filter((l) => l.zone !== "scale");
+        const done = (e.loads || []).filter((l) => l.zone === "scale");
+        return `<article class="epic" id="epic-${e.id}">
+          <header>
+            <h2>${escape(e.title)} <span>${e.open} open · ${e.done} weighed</span></h2>
+            <p class="why">${escape(e.why || "")}</p>
+          </header>
+          <div class="epic-loads">${open.map((l) => ticket(l, true)).join("") || "<p class='empty'>Nothing open.</p>"}</div>
+          ${done.length ? `<details class="weighed"><summary>Weighed ${done.length}</summary>${done.map((l) => ticket(l)).join("")}</details>` : ""}
+        </article>`;
+      }).join("");
+
+    const loose = (yard.ungrouped || []).filter((l) => l.zone !== "scale");
+    lotSec.hidden = loose.length === 0;
+    const lotN = $("lotN");
+    if (lotN) lotN.textContent = loose.length ? String(loose.length) : "";
+    lotEl.innerHTML = loose.map((l) => ticket(l, true)).join("");
   }
 
   function findLoad(id) {
@@ -156,7 +173,8 @@
     const load = findLoad(id);
     if (!load) return;
     openId = id;
-    $("sheetZone").textContent = load.gate ? `gate · ${load.zone}` : load.zone;
+    const epicName = ((yard.epics || []).find((e) => e.id === load.epic) || {}).title || load.epic || "";
+    $("sheetZone").textContent = [epicName, load.gate ? "gate" : "", load.zone].filter(Boolean).join(" · ");
     $("sheetTitle").value = load.title;
     $("sheetSaid").value = load.said || "";
     $("sheetDid").value = load.did || "";
@@ -177,7 +195,8 @@
     if (openId) {
       const still = findLoad(openId);
       if (still) {
-        $("sheetZone").textContent = still.gate ? `gate · ${still.zone}` : still.zone;
+        const epicName = ((yard.epics || []).find((e) => e.id === still.epic) || {}).title || "";
+        $("sheetZone").textContent = [epicName, still.gate ? "gate" : "", still.zone].filter(Boolean).join(" · ");
       }
     }
   }
@@ -212,9 +231,15 @@
     const btn = e.target.closest("[data-id]");
     if (btn) openSheet(Number(btn.dataset.id));
   });
-  scaleEl.addEventListener("click", (e) => {
+  boardEl.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-id]");
     if (btn) openSheet(Number(btn.dataset.id));
+  });
+  epicNav.addEventListener("click", (e) => {
+    const chip = e.target.closest("[data-epic]");
+    if (!chip) return;
+    focusEpic = chip.dataset.epic || "";
+    render();
   });
 
   sheet.addEventListener("click", async (e) => {
@@ -269,7 +294,7 @@
     try {
       await api("/api/loads", {
         method: "POST",
-        body: JSON.stringify({ title, said: title }),
+        body: JSON.stringify({ title, said: title, epic: focusEpic || "board" }),
       });
       dropIn.value = "";
       await refresh();
