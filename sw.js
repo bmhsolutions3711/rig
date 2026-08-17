@@ -1,4 +1,4 @@
-const CACHE = "rig-v2";
+const CACHE = "rig-v3";
 
 self.addEventListener("install", (e) => {
   const base = self.registration.scope;

@@ -270,6 +270,7 @@ body {
 .empty { color: var(--ink-mute); font-size: 0.85rem; }
 
 .lot, .gate, .scale { display: flex; flex-direction: column; gap: 10px; }
+[hidden] { display: none !important; }
 h2 {
   margin: 0;
   font-size: 0.68rem;

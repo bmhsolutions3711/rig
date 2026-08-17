@@ -184,7 +184,7 @@
     $("sheetSaid").focus();
   }
 
-  function closeSheet() {
+  function hideLoadSheet() {
     sheet.hidden = true;
     openId = null;
   }
@@ -245,7 +245,7 @@
   sheet.addEventListener("click", async (e) => {
     if (e.target.closest("[data-close]")) {
       try { await saveOpen(); } catch (_) {}
-      closeSheet();
+      hideLoadSheet();
       try { await refresh(); } catch (_) {}
       return;
     }
@@ -272,7 +272,7 @@
         });
       }
       await refresh();
-      if (kind === "weigh") closeSheet();
+      if (kind === "weigh") hideLoadSheet();
     } catch (err) {
       if (err.code === 409) {
         padEl.classList.remove("refuse");
