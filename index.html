@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0b" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>RIG</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="mast">
+      <div class="brand">RIG</div>
+      <div class="bay" id="bay">work</div>
+      <div class="pad-count" id="padCount" aria-live="polite">0/3</div>
+      <div class="gate-lamp" id="gateLamp" data-on="0" title="gate clear"></div>
+      <button type="button" class="mast-act" id="closeBtn">Close</button>
+    </header>
+    <p class="last" id="lastLeft" hidden></p>
+
+    <section class="pad" id="pad" aria-label="The pad"></section>
+
+    <section class="gate" id="gate" hidden>
+      <h2>Gate</h2>
+      <div class="gate-list" id="gateList"></div>
+    </section>
+
+    <section class="lot" aria-label="The lot">
+      <h2>Lot <span id="lotN"></span></h2>
+      <div class="lot-list" id="lot"></div>
+    </section>
+
+    <section class="scale" id="scaleSec" hidden>
+      <h2>Scale <span id="scaleN"></span></h2>
+      <div class="scale-list" id="scale"></div>
+    </section>
+
+    <form class="drop" id="drop" autocomplete="off">
+      <label class="sr" for="dropIn">Drop a load</label>
+      <input id="dropIn" name="title" maxlength="160" enterkeyhint="done"
+             placeholder="Drop a load…" />
+      <button type="submit" class="drop-go">File</button>
+    </form>
+  </div>
+
+  <div class="sheet" id="sheet" hidden>
+    <div class="sheet-back" data-close></div>
+    <article class="sheet-card" role="dialog" aria-modal="true">
+      <header>
+        <p class="kicker" id="sheetZone"></p>
+        <label class="title-lab">Load
+          <input id="sheetTitle" maxlength="160" />
+        </label>
+      </header>
+      <label>I said
+        <textarea id="sheetSaid" rows="2"></textarea>
+      </label>
+      <label>I did
+        <textarea id="sheetDid" rows="2"></textarea>
+      </label>
+      <label>Body
+        <textarea id="sheetBody" rows="3"></textarea>
+      </label>
+      <div class="sheet-acts">
+        <button type="button" class="act primary" data-act="pull">Pull onto pad</button>
+        <button type="button" class="act" data-act="lot">Return to lot</button>
+        <button type="button" class="act weigh" data-act="weigh">Weigh out</button>
+        <button type="button" class="act ghost" data-act="hand">Needs my hand</button>
+      </div>
+      <p class="sheet-err" id="sheetErr" hidden></p>
+      <button type="button" class="sheet-x" data-close>Close</button>
+    </article>
+  </div>
+
+  <div class="connect" id="connect" hidden>
+    <form id="connectForm">
+      <p class="brand">RIG</p>
+      <p class="lede">The book is on the Pro. Both values stay on this device.</p>
+      <label>Origin
+        <input id="originIn" type="url" inputmode="url" autocomplete="off"
+               placeholder="https://bryans-macbook-pro-1.tail1ed408.ts.net:8700" />
+      </label>
+      <label>Token
+        <input id="tokenIn" type="password" autocomplete="off" />
+      </label>
+      <button type="submit" class="act primary">Connect</button>
+      <p class="sheet-err" id="connectErr" hidden></p>
+    </form>
+  </div>
+
+  <div class="sheet" id="closeSheet" hidden>
+    <div class="sheet-back" data-close-entry></div>
+    <article class="sheet-card" role="dialog" aria-modal="true">
+      <header>
+        <p class="kicker">Close the book</p>
+        <h3>What this session was</h3>
+      </header>
+      <label>Happened
+        <textarea id="enNarrative" rows="3" placeholder="What moved."></textarea>
+      </label>
+      <label>Learned
+        <textarea id="enFindings" rows="2" placeholder="What we did not know this morning."></textarea>
+      </label>
+      <label>Decided
+        <textarea id="enDecisions" rows="2"></textarea>
+      </label>
+      <label>Next — files a load on the lot
+        <textarea id="enNext" rows="2" placeholder="The first line is the load name."></textarea>
+      </label>
+      <div class="sheet-acts">
+        <button type="button" class="act primary" id="enSave">Close it</button>
+      </div>
+      <p class="sheet-err" id="enErr" hidden></p>
+      <button type="button" class="sheet-x" data-close-entry>Not yet</button>
+    </article>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
