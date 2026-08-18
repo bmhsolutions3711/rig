@@ -59,7 +59,7 @@
     const headers = { "Content-Type": "application/json", ...(opt.headers || {}) };
     if (token) headers.Authorization = `Bearer ${token}`;
     const res = await fetch(apiUrl(path), {
-      credentials: origin ? "omit" : "same-origin",
+      credentials: origin ? "omit" : "include",
       ...opt,
       headers,
     });
@@ -86,6 +86,10 @@
     } else {
       $("connectErr").hidden = true;
     }
+    $("originRow").hidden = !onPages;
+    $("connectLede").textContent = onPages
+      ? "Pages is glass. Origin is the Pro on your tailnet. Token stays on this device."
+      : "Tailnet only. Paste the token. Not Google — this page.";
     $("originIn").value = origin || DEFAULT_ORIGIN;
     $("tokenIn").value = token;
     connect.hidden = false;
@@ -344,11 +348,21 @@
 
   $("connectForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    origin = $("originIn").value.trim().replace(/\/$/, "");
     token = $("tokenIn").value.trim();
+    origin = onPages ? $("originIn").value.trim().replace(/\/$/, "") : "";
     localStorage.setItem("rig_origin", origin);
     localStorage.setItem("rig_token", token);
     try {
+      const join = await fetch(apiUrl("/api/connect"), {
+        method: "POST",
+        credentials: origin ? "omit" : "include",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ token }),
+      });
+      if (!join.ok) {
+        showConnect("bad token");
+        return;
+      }
       await refresh();
       connect.hidden = true;
     } catch (err) {
@@ -396,8 +410,40 @@
     drawLog($("logQ").value.trim());
   });
 
+  const ver = $("ver");
+  function askVersion() {
+    navigator.serviceWorker.ready
+      .then((r) => r.active && r.active.postMessage({ type: "VERSION" }))
+      .catch(() => {});
+  }
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").catch(() => {});
+    navigator.serviceWorker.addEventListener("message", (e) => {
+      if (e.data && e.data.type === "VERSION" && ver) {
+        ver.textContent = String(e.data.version || "").replace("rig-shell-", "") || "v?";
+      }
+    });
+    askVersion();
+    setTimeout(askVersion, 2500);
+    setTimeout(() => { if (ver && /^v1$/.test(ver.textContent)) {/* still the html default */} }, 4000);
+    navigator.serviceWorker.addEventListener("controllerchange", () => setTimeout(askVersion, 300));
+    ver.addEventListener("click", async () => {
+      ver.className = "ver checking";
+      ver.textContent = "pulling";
+      try {
+        const r = await navigator.serviceWorker.getRegistration();
+        if (r) {
+          navigator.serviceWorker.addEventListener("controllerchange", () => location.reload(), { once: true });
+          await r.update();
+          if (r.waiting) r.waiting.postMessage({ type: "SKIP_WAITING" });
+          setTimeout(() => location.reload(), 3000);
+          return;
+        }
+      } catch (_) { /* reload anyway */ }
+      location.reload();
+    });
+  } else if (ver) {
+    ver.textContent = "fresh";
   }
 
   (async () => {

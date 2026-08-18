@@ -57,10 +57,24 @@ body {
 
 .mast {
   display: grid;
-  grid-template-columns: auto 1fr auto auto auto;
+  grid-template-columns: auto 1fr auto auto auto auto;
   align-items: center;
   gap: 12px;
 }
+.ver {
+  background: none;
+  border: 1px solid #2a2824;
+  color: var(--ink-mute);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 6px 9px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.ver.checking { color: var(--paint); border-color: var(--paint); }
+.ver.fresh { color: var(--ok); border-color: var(--ok); }
 .mast-act {
   background: none;
   border: 0;

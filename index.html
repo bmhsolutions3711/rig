@@ -19,6 +19,7 @@
       <div class="bay" id="bay">board</div>
       <div class="pad-count" id="padCount" aria-live="polite">0/3</div>
       <div class="gate-lamp" id="gateLamp" data-on="0" title="gate clear"></div>
+      <button type="button" class="ver" id="ver" title="Tap to pull an update">v1</button>
       <button type="button" class="mast-act" id="closeBtn">Close</button>
     </header>
     <p class="last" id="lastLeft" hidden></p>
@@ -97,8 +98,8 @@
   <div class="connect" id="connect" hidden>
     <form id="connectForm">
       <p class="brand">RIG</p>
-      <p class="lede">The book is on the Pro. Both values stay on this device.</p>
-      <label>Origin
+      <p class="lede" id="connectLede">Tailnet only. Type the address in the bar at the top — not Google.</p>
+      <label id="originRow">Origin
         <input id="originIn" type="url" inputmode="url" autocomplete="off"
                placeholder="https://bryans-macbook-pro-1.tail1ed408.ts.net:8700" />
       </label>
