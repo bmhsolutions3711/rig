@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0b" />
+  <meta name="theme-color" content="#0b1016" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>RIG</title>
@@ -16,54 +16,171 @@
   <div id="app">
     <header class="mast">
       <div class="brand">RIG</div>
-      <div class="bay" id="bay">board</div>
+      <div class="bay" id="bay">yard</div>
       <div class="pad-count" id="padCount" aria-live="polite">0/3</div>
       <div class="gate-lamp" id="gateLamp" data-on="0" title="gate clear"></div>
-      <button type="button" class="ver" id="ver" title="Tap to pull an update">v1</button>
+      <button type="button" class="ver" id="ver" title="Tap to pull an update">v33</button>
       <button type="button" class="mast-act" id="closeBtn">Close</button>
     </header>
-    <p class="last" id="lastLeft" hidden></p>
+    <nav class="dock" id="dock">
+      <button type="button" data-room="yard" class="on">Yard</button>
+      <button type="button" data-room="money">Money</button>
+      <button type="button" data-room="soul">Soul</button>
+      <button type="button" data-room="talk">Ridge</button>
+      <button type="button" data-room="board">Board</button>
+      <button type="button" data-room="log">Log</button>
+    </nav>
 
-    <section class="pad" id="pad" aria-label="The pad"></section>
-
-    <section class="gate" id="gate" hidden>
-      <div id="gateFront" hidden>
-        <h2>Gate — front</h2>
-        <div class="gate-list" id="frontList"></div>
-      </div>
-      <div id="gateFold" hidden>
-        <h2>Gate — fold</h2>
-        <div class="gate-list" id="foldList"></div>
-      </div>
-    </section>
-
-    <nav class="epic-nav" id="epicNav" hidden></nav>
-
-    <section class="board" id="board" aria-label="Epics and stories"></section>
-
-    <section class="lot" id="lotSec" hidden>
-      <h2>Ungrouped <span id="lotN"></span></h2>
-      <div class="lot-list" id="lot"></div>
-    </section>
-
-    <section class="log-fold">
-      <details id="logBox">
-        <summary>The log <span id="logN"></span></summary>
-        <form class="log-find" id="logFind" autocomplete="off">
-          <label class="sr" for="logQ">Find in the log</label>
-          <input id="logQ" placeholder="kind, ref, or words" />
-          <button type="submit" class="act">Find</button>
-        </form>
-        <ol class="log-list" id="logList"></ol>
+    <div class="room on" data-room="yard">
+      <p class="last" id="lastLeft" hidden></p>
+      <p class="lens" id="lens" hidden></p>
+      <details class="current" id="currentBox">
+        <summary>Current <span id="currentAt"></span></summary>
+        <pre id="currentText"></pre>
       </details>
-    </section>
+      <section class="pad" id="pad" aria-label="The pad"></section>
+      <section class="gate" id="gate" hidden>
+        <div id="gateFront" hidden>
+          <h2>Gate — front</h2>
+          <div class="gate-list" id="frontList"></div>
+        </div>
+        <div id="gateFold" hidden>
+          <h2>Gate — fold</h2>
+          <div class="gate-list" id="foldList"></div>
+        </div>
+      </section>
+      <form class="drop" id="drop" autocomplete="off">
+        <label class="sr" for="dropIn">Drop a load</label>
+        <input id="dropIn" name="title" maxlength="160" enterkeyhint="done"
+               placeholder="Drop a load…" />
+        <button type="submit" class="drop-go">File</button>
+      </form>
+    </div>
 
-    <form class="drop" id="drop" autocomplete="off">
-      <label class="sr" for="dropIn">Drop a load</label>
-      <input id="dropIn" name="title" maxlength="160" enterkeyhint="done"
-             placeholder="Drop a load…" />
-      <button type="submit" class="drop-go">File</button>
-    </form>
+    <div class="room" data-room="money">
+      <section class="money" id="moneySec">
+        <h2>Money</h2>
+        <div class="money-figs" id="moneyFigs"></div>
+        <p class="money-notes" id="moneyNotes"></p>
+        <section class="trips" id="tripsSec" aria-label="Loads this month">
+          <h2>This month <span id="tripsN"></span></h2>
+          <div id="tripsList"></div>
+        </section>
+        <section class="place" id="placeSec" aria-label="Place expenses">
+          <h2>Place <span id="placeN"></span></h2>
+          <p class="why">A weekly fuel bill can sit on several loads. A split is an allocation, never a measurement.</p>
+          <div class="place-acts">
+            <button type="button" class="act" id="placeStab">Take a stab</button>
+            <button type="button" class="act primary" id="placeApply">Apply auto</button>
+            <button type="button" class="act ghost" id="placeClearAuto">Clear auto</button>
+          </div>
+          <p class="sheet-err" id="placeErr" hidden></p>
+          <div id="placePreview" hidden></div>
+          <div id="placePile"></div>
+        </section>
+        <form class="money-paste" id="moneyPaste" autocomplete="off">
+          <label class="sr" for="bankText">Paste a bank list</label>
+          <textarea id="bankText" rows="4" placeholder="Paste a bank list or a PNC export. Date and amount on each line."></textarea>
+          <input id="bankAcct" placeholder="account (pnc, chase…)" />
+          <button type="submit" class="act primary">File the list</button>
+        </form>
+        <div class="money-up">
+          <label class="act">Upload a statement
+            <input type="file" id="docFile" hidden />
+          </label>
+          <div class="shot-well" id="shotWell" tabindex="0">Paste a screenshot here (Cmd+V)</div>
+        </div>
+        <input id="shotAmt" placeholder="balance on that shot, if you read it" />
+        <div class="doc-list" id="docList"></div>
+      </section>
+    </div>
+
+    <div class="room" data-room="soul">
+      <section class="soul" id="soulSec" aria-label="Soul">
+        <h2>Soul</h2>
+        <p class="why">Unsigned is not signed. He is the only stamp.</p>
+        <button type="button" class="act primary" id="newCreed">File a creed</button>
+        <div id="soulUnsigned"></div>
+        <div id="soulSigned"></div>
+      </section>
+    </div>
+
+    <div class="room" data-room="board">
+      <div class="dock-wrap" id="dockWrap">
+        <button type="button" class="act swim-fold" id="swimFold" aria-expanded="true">Fold dock</button>
+        <section class="swim" id="swim" aria-label="In progress, QA, Closed">
+          <div class="col" data-col="pad">
+            <h2>In progress <span id="progN"></span></h2>
+            <p class="why">Three at most.</p>
+            <p class="col-sum" id="progSum"></p>
+            <div class="col-list" id="progList"></div>
+          </div>
+          <div class="col" data-col="qa">
+            <h2>QA <span id="qaN"></span></h2>
+            <p class="why">Built. Not proven.</p>
+            <p class="col-sum" id="qaSum"></p>
+            <div class="col-list" id="qaList"></div>
+          </div>
+          <div class="col" data-col="scale">
+            <h2>Closed <span id="closedN"></span></h2>
+            <p class="why">You close it. Drag it here. Archive when you want, or after 7 days.</p>
+            <p class="col-sum" id="closedSum"></p>
+            <button type="button" class="act archive-closed" id="archiveClosed">Archive</button>
+            <div class="col-list" id="closedList"></div>
+          </div>
+        </section>
+      </div>
+      <nav class="epic-nav" id="epicNav" hidden></nav>
+      <div class="grow">
+        <button type="button" class="act" id="newEpic">New epic</button>
+        <button type="button" class="act primary" id="newStory">New story</button>
+      </div>
+      <section class="board" id="board" aria-label="Epics and stories"></section>
+      <section class="lot" id="lotSec" hidden>
+        <h2>Ungrouped <span id="lotN"></span></h2>
+        <div class="lot-list" id="lot"></div>
+      </section>
+    </div>
+
+    <div class="room" data-room="talk">
+      <section class="talk" id="talkSec">
+        <header class="talk-head">
+          <div>
+            <h2>Ridge <span id="talkModel"></span></h2>
+            <p class="why" id="talkState">Local Gemma 4. Saved on the Pro.</p>
+          </div>
+          <div class="talk-tools">
+            <button type="button" class="act" id="talkMode">Counsel</button>
+            <button type="button" class="act" id="talkHear" data-on="0">Voice</button>
+            <button type="button" class="act" id="talkExport">Export</button>
+            <button type="button" class="act" id="talkArm">Off</button>
+          </div>
+        </header>
+        <ol class="talk-log" id="talkLog"></ol>
+        <form class="talk-in" id="talkForm" autocomplete="off">
+          <label class="sr" for="talkIn">Say something</label>
+          <textarea id="talkIn" rows="2" maxlength="4000"
+                    placeholder="Life, business, spirit. It stays on the Pro."></textarea>
+          <button type="button" class="act" id="talkMic">Speak</button>
+          <button type="submit" class="act primary" id="talkSend">Send</button>
+        </form>
+        <p class="sheet-err" id="talkErr" hidden></p>
+      </section>
+    </div>
+
+    <div class="room" data-room="log">
+      <section class="log-fold">
+        <details id="logBox" open>
+          <summary>The log <span id="logN"></span></summary>
+          <form class="log-find" id="logFind" autocomplete="off">
+            <label class="sr" for="logQ">Find in the log</label>
+            <input id="logQ" placeholder="kind, ref, or words" />
+            <button type="submit" class="act">Find</button>
+          </form>
+          <ol class="log-list" id="logList"></ol>
+        </details>
+      </section>
+    </div>
   </div>
 
   <div class="sheet" id="sheet" hidden>
@@ -78,18 +195,19 @@
       <label>I said
         <textarea id="sheetSaid" rows="2"></textarea>
       </label>
-      <label>I did
+      <label>I did — what is true, not what sounds good
         <textarea id="sheetDid" rows="2"></textarea>
       </label>
       <label>Body
         <textarea id="sheetBody" rows="3"></textarea>
       </label>
       <div class="sheet-acts">
-        <button type="button" class="act primary" data-act="pull">Pull onto pad</button>
-        <button type="button" class="act" data-act="lot">Return to lot</button>
-        <button type="button" class="act weigh" data-act="weigh">Weigh out</button>
+        <button type="button" class="act primary" data-act="pull">In progress</button>
+        <button type="button" class="act" data-act="qa">QA</button>
+        <button type="button" class="act" data-act="lot">Backlog</button>
         <button type="button" class="act ghost" data-act="hand">Needs my hand</button>
       </div>
+      <p class="why" id="sheetCloseHint">Close by dragging onto Closed.</p>
       <p class="sheet-err" id="sheetErr" hidden></p>
       <button type="button" class="sheet-x" data-close>Close</button>
     </article>
@@ -111,6 +229,37 @@
     </form>
   </div>
 
+  <div class="sheet" id="growSheet" hidden>
+    <div class="sheet-back" data-grow-close></div>
+    <article class="sheet-card" role="dialog">
+      <header>
+        <p class="kicker" id="growKick">New</p>
+        <h3 id="growTitle">Add to the board</h3>
+      </header>
+      <label id="growEpicRow" hidden>Epic
+        <select id="growEpic"></select>
+      </label>
+      <label id="growTierRow" hidden>Tier
+        <select id="growTier">
+          <option value="bedrock">bedrock</option>
+          <option value="working" selected>working</option>
+          <option value="reference">reference</option>
+        </select>
+      </label>
+      <label>Name
+        <input id="growName" maxlength="160" />
+      </label>
+      <label id="growWhyLab">Why / I said
+        <textarea id="growWhy" rows="3"></textarea>
+      </label>
+      <div class="sheet-acts">
+        <button type="button" class="act primary" id="growSave">File it</button>
+      </div>
+      <p class="sheet-err" id="growErr" hidden></p>
+      <button type="button" class="sheet-x" data-grow-close>Not yet</button>
+    </article>
+  </div>
+
   <div class="sheet" id="closeSheet" hidden>
     <div class="sheet-back" data-close-entry></div>
     <article class="sheet-card" role="dialog" aria-modal="true">
@@ -123,6 +272,9 @@
       </label>
       <label>Learned
         <textarea id="enFindings" rows="2" placeholder="What we did not know this morning."></textarea>
+      </label>
+      <label>The good, if true
+        <textarea id="enGood" rows="2" placeholder="A real good. Leave blank if there isn’t one. Do not invent."></textarea>
       </label>
       <label>Decided
         <textarea id="enDecisions" rows="2"></textarea>
